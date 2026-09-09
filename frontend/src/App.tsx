@@ -23,6 +23,7 @@ import {
   fetchVerticalUnits,
   fetchUnitSubUnits,
   generateBuilding3DPrototype,
+  API_BASE,
 } from "./api/cadastreApi";
 import { defaultBuildingDiscoveryProvider } from "./services/buildingDiscoveryProvider";
 import { DEFAULT_CUTAWAY_STATE } from "./utils/cutawayUtils";
@@ -310,9 +311,9 @@ export const App: React.FC = () => {
       })
       .catch((err) => {
         console.error("Failed to connect to backend:", err);
-        setIsConnected(false);
+        const targetUrl = API_BASE.startsWith("http") ? API_BASE : `http://127.0.0.1:8000${API_BASE}`;
         setErrorMessage(
-          "Unable to connect to FastAPI backend at http://127.0.0.1:8000. Ensure the backend uvicorn server is running."
+          `Unable to connect to FastAPI backend at ${targetUrl}. Ensure the backend server is running and CORS allows this origin.`
         );
       });
   }, []);

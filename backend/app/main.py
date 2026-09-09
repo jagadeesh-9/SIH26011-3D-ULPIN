@@ -36,10 +36,11 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# CORS Configuration for local frontend development
+# CORS Configuration supporting local development, FRONTEND_ORIGIN, and Vercel deployments
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.allowed_cors_origins,
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -69,11 +70,23 @@ app.include_router(geometry_router, prefix="/api")
 
 
 
+@app.get("/health", tags=["Health"])
+def liveness_check():
+    """Lightweight liveness check for cloud load balancers and container orchestrators."""
+    return {
+        "status": "healthy",
+        "service": "SIH26011-3D-ULPIN-Backend",
+        "environment": settings.app_env,
+        "version": "0.1.0"
+    }
+
+
 @app.get("/")
 def root():
     return {
         "system": "SIH26011 3D ULPIN Research Prototype",
         "status": "online",
         "docs_url": "/docs",
-        "health_url": "/api/health"
+        "health_url": "/health",
+        "diagnostic_url": "/api/health"
     }

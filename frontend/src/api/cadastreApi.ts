@@ -22,7 +22,21 @@ import type {
   PrototypeTechnicalReviewDossier
 } from "../types/cadastre";
 
-const API_BASE = "/api";
+/**
+ * Resolves the API base URL based on environment configuration.
+ * - In production: uses import.meta.env.VITE_API_BASE_URL (e.g., https://my-backend.railway.app/api or https://my-backend.railway.app)
+ * - In local dev (default): falls back to '/api', which is forwarded by Vite's dev proxy to http://127.0.0.1:8000
+ */
+export function getApiBaseUrl(): string {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (!envUrl || !envUrl.trim()) {
+    return "/api";
+  }
+  const clean = envUrl.trim().replace(/\/+$/, "");
+  return clean.endsWith("/api") ? clean : `${clean}/api`;
+}
+
+export const API_BASE = getApiBaseUrl();
 
 
 export async function fetchParcels(): Promise<Parcel[]> {
