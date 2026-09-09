@@ -1,0 +1,7 @@
+.venv
+backend
+data
+scripts
+tests
+scratch
+.agents

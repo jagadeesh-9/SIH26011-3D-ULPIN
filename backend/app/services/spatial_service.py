@@ -6,6 +6,7 @@ import re
 import uuid
 from typing import List, Optional, Dict, Any
 from fastapi import HTTPException, status
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from backend.app.repositories.spatial_repository import SpatialRepository
@@ -77,6 +78,7 @@ def parse_polyhedralsurface_ewkt(ewkt: Optional[str]) -> Dict[str, Any]:
 
 class SpatialService:
     def __init__(self, db: Session):
+        self.db = db
         self.repo = SpatialRepository(db)
 
     def get_health(self) -> HealthResponse:
